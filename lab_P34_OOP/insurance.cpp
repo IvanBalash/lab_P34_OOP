@@ -89,14 +89,15 @@ void insurance::edit(){
 	bool ival = 0;//флаг некоректного значения
 	bool equal = 0;
 	while (edit_cmd != "EXIT") {//цикл работы в режиме редактирования
-		system("cls");
 		this->print_info();
 		if (icmd) cout << "incorrect command" << endl;
 		if (ied) cout << "end date can't be before start date" << endl;
 		if (ival) cout << "incorrect value" << endl;//выводим сообщения об ошибках
 		cout << "commands:" << endl;
 		cout << "\t[parametr name] x - change value of parametr to x" << endl;
-		cout << "\tif you want to change a date print dd mm yyyy insted of x" << endl;
+		cout << "\tif you want to change a date print dd.mm.yyyy insted of x" << endl;
+		cout << "\tplease be careful, incorrect date will break the programm" << endl;
+		cout << "\tthe date should exist, and be after 1.1.1970" << endl;
 		cout << "\tpolicy number shuld be 12 symbols length" << endl;
 		cout << "\tis it active changes automatically" << endl;
 		cout << "\tEXIT - return to main menu" << endl << endl;//выводим список команд
@@ -132,116 +133,27 @@ void insurance::edit(){
 			time_t new_time = 0;
 			struct tm new_date;//переменная для нового значения
 			gmtime_s(&new_date, &new_time);
-			int mon;
-			int year;
-			int day;
-			cin >> day;//считываем новое значение
-			cin >> mon;//считываем новое значение
-			cin >> year;//считываем новое значение
-			if ((mon > 0 && mon < 13) && (year >= 1970)) {
-				new_time += (year - 1970) * 365 * 24 * 3600;
-				new_time += (mon - 1) * 30 * 24 * 3600;
-				new_time += (day - 1) * 24 * 3600;
-				gmtime_s(&new_date, &new_time);
-				while (!equal) {
-					if (new_date.tm_year < (year - 1900)) {
-						new_time += 1 * 365 * 24 * 3600;
-					}
-					else if (new_date.tm_year > (year - 1900)) {
-						new_time -= 1 * 365 * 24 * 3600;
-					}
-					else {
-						if (new_date.tm_mon > (mon - 1)) {
-							new_time -= 1 * 28 * 24 * 3600;
-						}
-						else if (new_date.tm_mon < (mon - 1)) {
-							new_time += 1 * 28 * 24 * 3600;
-						}
-						else {
-							if (new_date.tm_mday > day) {
-								new_time -= 1 * 24 * 3600;
-							}
-							else if (new_date.tm_mday < day) {
-								new_time += 1 * 24 * 3600;
-							}
-						}
-					}
-					gmtime_s(&new_date, &new_time);
-					if (((new_date.tm_mon + 1) == mon)
-						&& ((new_date.tm_year + 1900) == year)
-						&& (new_date.tm_mday == day)) {
-						equal = 1;
-					}
-				}
-				new_time = mktime(&new_date);
-				this->set_start_date(new_time);
-			}
-			else {
-				icmd = 1;
-				ival = 1;//выставляем флаги ошибок
-			}
+			cin >> get_time(&new_date, "%d.%m.%Y");
+			new_time = mktime(&new_date);
+			new_time += 3 * 3600;
+			this->set_start_date(new_time);
 		}
 
 		else if (edit_cmd == "end_date") {
 			time_t new_time = 0;
 			struct tm new_date;//переменная для нового значения
 			gmtime_s(&new_date, &new_time);
-			int mon;
-			int year;
-			int day;
-			cin >> day;//считываем новое значение
-			cin >> mon;//считываем новое значение
-			cin >> year;//считываем новое значение
-			if ((mon > 0 && mon < 13) && (year >= 1970)) {
-				new_time += (year - 1970) * 365 * 24 * 3600;
-				new_time += (mon - 1) * 30 * 24 * 3600;
-				new_time += (day - 1) * 24 * 3600;
-				gmtime_s(&new_date, &new_time);
-				while (!equal) {
-					if (new_date.tm_year < (year - 1900)) {
-						new_time += 1 * 365 * 24 * 3600;
-					}
-					else if (new_date.tm_year > (year - 1900)) {
-						new_time -= 1 * 365 * 24 * 3600;
-					}
-					else {
-						if (new_date.tm_mon > (mon - 1)) {
-							new_time -= 1 * 28 * 24 * 3600;
-						}
-						else if (new_date.tm_mon < (mon - 1)) {
-							new_time += 1 * 28 * 24 * 3600;
-						}
-						else {
-							if (new_date.tm_mday > day) {
-								new_time -= 1 * 24 * 3600;
-							}
-							else if (new_date.tm_mday < day) {
-								new_time += 1 * 24 * 3600;
-							}
-							else {
-								equal = 1;
-							}
-						}
-					}
-					gmtime_s(&new_date, &new_time);
-				}
-				new_time = mktime(&new_date);
-				if (!this->set_end_date(new_time)) {
-					icmd = 1;
-					ied = 1;//выставляем флаги ошибок
-				}
-			}
-			else {
-				icmd = 1;
-				ival = 1;//выставляем флаги ошибок
-			}
+			cin >> get_time(&new_date, "%d.%m.%Y");
+			new_time = mktime(&new_date);
+			new_time += 3 * 3600;
+			this->set_end_date(new_time);
 		}
 
 		else {
 			icmd = 1;//выставляем флаг ошибки при неверной команде
 		}
+		system("cls");
 	}
-	system("cls");
 }
 
 bool insurance::is_set(){

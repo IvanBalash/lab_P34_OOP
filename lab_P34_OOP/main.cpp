@@ -1,4 +1,3 @@
-
 #include <iostream>//библиотеа ввода-вывода
 #include <string>//библиотека строк
 #include <iomanip>//библиотека форматирования ввода-вывода
@@ -99,7 +98,7 @@ void ADD(insurance*** data, int length) {
 	while (!all_added){
 		system("cls");
 		if (icmd) {
-			cout << "pleas enter all parametrs";
+			cout << "pleas enter all parametrs" <<endl;
 		}
 		(*(new_data[length])).edit();
 		if ((*(new_data[length])).is_set()) {

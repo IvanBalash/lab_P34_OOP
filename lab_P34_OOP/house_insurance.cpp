@@ -10,7 +10,7 @@ house_insurance::house_insurance(){
 	this->set_surname("-");
 	this->price = 0;
 	this->possible_pay = 0;
-	this->house_id = "XXXXXXXXXXXX";
+	this->house_id = "XXXXXXXXXXXX";//присваеваем значения по умолчанию
 }
 
 house_insurance::house_insurance(time_t start_date, time_t end_date, string policy_num,
@@ -19,41 +19,40 @@ house_insurance::house_insurance(time_t start_date, time_t end_date, string poli
 	this->set_end_date(end_date);
 	this->update_is_active();
 	this->set_policy_num("XXXXXXXXXXXX");
-	if (!this->set_policy_num(policy_num)) {
+	if (!this->set_policy_num(policy_num)) {//вызывая сетер проверем коректность данных
 		this->set_policy_num("XXXXXXXXXXXX");
 	}
 	this->set_name(name);
 	this->set_surname(surname);
 	this->price = price;
 	this->possible_pay = possible_pay;
-	if (!this->set_house_id(house_id)) {
+	if (!this->set_house_id(house_id)) {//вызывая сетер проверем коректность данных
 		this->house_id = "XXXXXXXXXXXX";
-	}
-	
+	}//присваеваем значения
 }
 
 bool house_insurance::is_set(){
 	if (this->get_name() != "-" && this->get_surname() != "-" &&
 		this->get_policy_num() != "XXXXXXXXXXXX" && this->get_end_date() != 0 &&
-		this->get_house_id() != "XXXXXXXXXXXX" && this->get_price() != 0 && this->get_possible_pay() != 0) {
+		this->get_house_id() != "XXXXXXXXXXXX" && this->get_price() != 0 && this->get_possible_pay() != 0) {//проверяем отличаются ли значения от значений по умолчанию
 		return true;
 	}
 	return false;
 }
 
 void house_insurance::print_info(){
-	string _start_date, _end_date;
-	time_t date = get_start_date();
-	struct tm buf;
-	gmtime_s(&buf, &date);
+	string _start_date, _end_date;//строки под даты
+	time_t date = get_start_date();//получаем дату начала
+	struct tm buf;//структура времени
+	gmtime_s(&buf, &date);//присваеваем дату структуре
 	_start_date = to_string(buf.tm_mday) + "." +
 		to_string(buf.tm_mon + 1) + "." +
-		to_string(buf.tm_year + 1900);
-	date = get_end_date();
-	gmtime_s(&buf, &date);
+		to_string(buf.tm_year + 1900);//получаем строку с датой
+	date = get_end_date();//получаем дату конца
+	gmtime_s(&buf, &date);//присваеваем дату структуре
 	_end_date = to_string(buf.tm_mday) + "." +
 		to_string(buf.tm_mon + 1) + "." +
-		to_string(buf.tm_year + 1900);
+		to_string(buf.tm_year + 1900);//получаем строку с датой
 	cout << setw(20) << "policy_number:" << "| " << this->get_policy_num() << endl
 		<< setw(20) << "name:" << "| " << this->get_name() << endl
 		<< setw(20) << "surname:" << "| " << this->get_surname() << endl
@@ -67,18 +66,18 @@ void house_insurance::print_info(){
 }
 
 void house_insurance::print_info_in_array(int num){
-	string _start_date, _end_date;
-	time_t date = get_start_date();
-	struct tm buf;
-	gmtime_s(&buf, &date);
+	string _start_date, _end_date;//строки под даты
+	time_t date = get_start_date();//получаем дату начала
+	struct tm buf;//структура времени
+	gmtime_s(&buf, &date);//присваеваем дату структуре
 	_start_date = to_string(buf.tm_mday) + "." +
 		to_string(buf.tm_mon + 1) + "." +
-		to_string(buf.tm_year + 1900);
-	date = get_end_date();
-	gmtime_s(&buf, &date);
+		to_string(buf.tm_year + 1900);//получаем строку с датой
+	date = get_end_date();//получаем дату конца
+	gmtime_s(&buf, &date);//присваеваем дату структуре
 	_end_date = to_string(buf.tm_mday) + "." +
 		to_string(buf.tm_mon + 1) + "." +
-		to_string(buf.tm_year + 1900);
+		to_string(buf.tm_year + 1900);//получаем строку с датой
 	cout << '|' << setw(8) << num << '|'
 		<< setw(5) << "house" << '|'
 		<< setw(13) << this->get_policy_num() << '|'
@@ -146,21 +145,21 @@ void house_insurance::edit(){
 		else if (edit_cmd == "start_date") {
 			time_t new_time = 0;
 			struct tm new_date;//переменная для нового значения
-			gmtime_s(&new_date, &new_time);
-			cin >> get_time(&new_date, "%d.%m.%Y");
-			new_time = mktime(&new_date);
-			new_time += 3 * 3600;
-			this->set_start_date(new_time);
+			gmtime_s(&new_date, &new_time);//присваеваем дату структуре
+			cin >> get_time(&new_date, "%d.%m.%Y");//считываем дату
+			new_time = mktime(&new_date);//переводи дату в time_t
+			new_time += 3 * 3600;//приводим к МСК
+			this->set_start_date(new_time);//присваеваем новое значение
 		}
 
 		else if (edit_cmd == "end_date") {
 			time_t new_time = 0;
 			struct tm new_date;//переменная для нового значения
-			gmtime_s(&new_date, &new_time);
-			cin >> get_time(&new_date, "%d.%m.%Y");
-			new_time = mktime(&new_date);
-			new_time += 3 * 3600;
-			this->set_end_date(new_time);
+			gmtime_s(&new_date, &new_time);//присваеваем дату структуре
+			cin >> get_time(&new_date, "%d.%m.%Y");//считываем дату
+			new_time = mktime(&new_date);//переводи дату в time_t
+			new_time += 3 * 3600;//приводим к МСК
+			this->set_end_date(new_time);//присваеваем новое значение
 		}
 
 		else if (edit_cmd == "price") {

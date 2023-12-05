@@ -6,7 +6,7 @@ insurance::insurance(){
 	this->is_active = false;
 	this->policy_num = "XXXXXXXXXXXX";
 	this->name = "-";
-	this->surname = "-";
+	this->surname = "-";//присваеваем значения по умолчанию
 }
 
 insurance::insurance(time_t start_date, time_t end_date, 
@@ -20,29 +20,29 @@ insurance::insurance(time_t start_date, time_t end_date,
 	else {
 		this->is_active = false;
 	}
-	if (policy_num.length() != 12) {
+	if (policy_num.length() != 12) {//вызывая сетер проверем коректность данных
 		this->policy_num = "XXXXXXXXXXXX";
 	}
 	else { 
 		this->policy_num = policy_num; 
 	}
 	this->name = name;
-	this->surname = surname;
+	this->surname = surname; // присваеваем значения
 }
 
 void insurance::print_info(){
-	string _start_date, _end_date;
-	time_t date = get_start_date();
-	struct tm buf;
-	gmtime_s(&buf, &date);
+	string _start_date, _end_date;//строки под даты
+	time_t date = get_start_date();//получаем дату начала
+	struct tm buf;//структура времени
+	gmtime_s(&buf, &date);//присваеваем дату структуре
 	_start_date = to_string(buf.tm_mday) + "." +
 		to_string(buf.tm_mon + 1) + "." +
-		to_string(buf.tm_year + 1900);
-	date = get_end_date();
-	gmtime_s(&buf, &date);
+		to_string(buf.tm_year + 1900);//получаем строку с датой
+	date = get_end_date();//получаем дату конца
+	gmtime_s(&buf, &date);//присваеваем дату структуре
 	_end_date = to_string(buf.tm_mday) + "." +
 		to_string(buf.tm_mon + 1) + "." +
-		to_string(buf.tm_year + 1900);
+		to_string(buf.tm_year + 1900);//получаем строку с датой
 	cout << setw(20) << "policy_number:" << "| " << this->get_policy_num() << endl
 		<< setw(20) << "name:" << "| " << this->get_name() << endl
 		<< setw(20) << "surname:" << "| " << this->get_surname() << endl
@@ -53,18 +53,18 @@ void insurance::print_info(){
 }
 
 void insurance::print_info_in_array(int num){
-	string _start_date, _end_date;
-	time_t date = get_start_date();
-	struct tm buf;
-	gmtime_s(&buf, &date);
+	string _start_date, _end_date;//строки под даты
+	time_t date = get_start_date();//получаем дату начала
+	struct tm buf;//структура времени
+	gmtime_s(&buf, &date);//присваеваем дату структуре
 	_start_date = to_string(buf.tm_mday) + "." +
 		to_string(buf.tm_mon + 1) + "." +
-		to_string(buf.tm_year + 1900);
-	date = get_end_date();
-	gmtime_s(&buf, &date);
+		to_string(buf.tm_year + 1900);//получаем строку с датой
+	date = get_end_date();//получаем дату конца
+	gmtime_s(&buf, &date);//присваеваем дату структуре
 	_end_date = to_string(buf.tm_mday) + "." +
 		to_string(buf.tm_mon + 1) + "." +
-		to_string(buf.tm_year + 1900);
+		to_string(buf.tm_year + 1900);//получаем строку с датой
 	cout << '|' << setw(8) << num << '|'
 		 << setw(5) << "gnrl" << '|'
 		 << setw(13) << this->get_policy_num() << '|'
@@ -132,21 +132,21 @@ void insurance::edit(){
 		else if (edit_cmd == "start_date") {
 			time_t new_time = 0;
 			struct tm new_date;//переменная для нового значения
-			gmtime_s(&new_date, &new_time);
-			cin >> get_time(&new_date, "%d.%m.%Y");
-			new_time = mktime(&new_date);
-			new_time += 3 * 3600;
-			this->set_start_date(new_time);
+			gmtime_s(&new_date, &new_time);//присваеваем дату структуре
+			cin >> get_time(&new_date, "%d.%m.%Y");//считываем дату
+			new_time = mktime(&new_date);//переводи дату в time_t
+			new_time += 3 * 3600;//приводим к МСК
+			this->set_start_date(new_time);//присваеваем новое значение
 		}
 
 		else if (edit_cmd == "end_date") {
 			time_t new_time = 0;
 			struct tm new_date;//переменная для нового значения
-			gmtime_s(&new_date, &new_time);
-			cin >> get_time(&new_date, "%d.%m.%Y");
-			new_time = mktime(&new_date);
-			new_time += 3 * 3600;
-			this->set_end_date(new_time);
+			gmtime_s(&new_date, &new_time);//присваеваем дату структуре
+			cin >> get_time(&new_date, "%d.%m.%Y");//считываем дату
+			new_time = mktime(&new_date);//переводи дату в time_t
+			new_time += 3 * 3600;//приводим к МСК
+			this->set_end_date(new_time);//присваеваем новое значение
 		}
 
 		else {
@@ -158,7 +158,7 @@ void insurance::edit(){
 
 bool insurance::is_set(){
 	if (this->get_name() != "-" && this->get_surname() != "-" &&
-		this->get_policy_num() != "XXXXXXXXXXXX" && this->get_end_date() != 0) {
+		this->get_policy_num() != "XXXXXXXXXXXX" && this->get_end_date() != 0) {//проверяем отличаются ли значения от значений по умолчанию
 		return true;
 	}
 	return false;

@@ -1,8 +1,7 @@
 #include <iostream>//библиотеа ввода-вывода
 #include <string>//библиотека строк
 #include <iomanip>//библиотека форматирования ввода-вывода
-#include <regex>//библиотека работы с регулярными выражениями
-#include <fstream>//библиотека фалового ввода вывода
+#include <ctime>//библиотека работы со временем
 #include "insurance.h"
 #include "med_insurance.h"
 #include "house_insurance.h"//подключаем созданые нами классы
@@ -31,42 +30,42 @@ void data_write(insurance** data, int length) { // фунция вывода данных на экран
 }
 
 string MAX(insurance** data, int length){
-	time_t max = 0;
-	int num_of_max;
-	for (size_t i = 0; i < length; i++){
-		time_t time_length = (*(data[i])).get_end_date() - (*(data[i])).get_start_date();
-		if (time_length > max) {
+	time_t max = 0;//переменная под максимальное значение
+	int num_of_max = 0;//номер элемента в масиве с максимальным сроком действия
+	for (size_t i = 0; i < length; i++){//проходим по масиву
+		time_t time_length = (*(data[i])).get_end_date() - (*(data[i])).get_start_date();//высчитываем срок действия полиса в секундах
+		if (time_length > max) {//сравниваем с максимальным значением
 			max = time_length;
-			num_of_max = i;
+			num_of_max = i;//если значение больше присваеваем максимальному значение новое значение и запаменаем номер элемента
 		}
 	}
-	return (*(data[num_of_max])).get_policy_num();
+	return (*(data[num_of_max])).get_policy_num();//возвращаем номер полиса нужного элемента
 }
 
 string ENDS_LAST(insurance** data, int length) {
-	time_t max = 0;
-	int num_of_max;
+	time_t max = 0;//переменная под максимальное значение
+	int num_of_max;//номер элемента в масиве с максимальной датой окончания
 	for (size_t i = 0; i < length; i++) {
-		time_t end_time = (*(data[i])).get_end_date();
-		if (end_time > max) {
+		time_t end_time = (*(data[i])).get_end_date();//сохраняем дату в переменную
+		if (end_time > max) {//сравниваем с максимальным значением
 			max = end_time;
-			num_of_max = i;
+			num_of_max = i;//если значение больше присваеваем максимальному значение новое значение и запаменаем номер элемента
 		}
 	}
-	return (*(data[num_of_max])).get_policy_num();
+	return (*(data[num_of_max])).get_policy_num();//возвращаем номер полиса нужного элемента
 }
 
 void ADD(insurance*** data, int length) {
-	string add_cmd;
+	string add_cmd;//переменная команд
 	bool icmd = 0;//флаг неверной команды
 	bool type_chousen = 0;//флаг выбора типа страховки
-	bool all_added = 0;
-	insurance** old_data = *data;
-	insurance** new_data = new insurance*[length + 1];
-	for (size_t i = 0; i < length; i++) {
+	bool all_added = 0;//флаг добавления всех необходимых элементов
+	insurance** old_data = *data;//сохраняем старый масив в новую переменную
+	insurance** new_data = new insurance*[length + 1];//создаем масив большего размера
+	for (size_t i = 0; i < length; i++) {//переносим старые значения в новый масив
 		new_data[i] = old_data[i];
 	}
-	while (!type_chousen) {
+	while (!type_chousen) {//просим пользователя выбрать тип страховки
 		system("cls");
 		cout << "what type of insurance it will be?" << endl;
 		cout << "\tmed - medical insurance" << endl;
@@ -75,43 +74,42 @@ void ADD(insurance*** data, int length) {
 		cin >> add_cmd;
 		icmd = 0;
 		if (add_cmd == "med") {
-			med_insurance* new_insurance = new med_insurance();
-			new_data[length] = new_insurance;
-			type_chousen = 1;
+			med_insurance* new_insurance = new med_insurance();//создаем новый элемент
+			new_data[length] = new_insurance;//добавляем его в масив
+			type_chousen = 1;//выставляем флаг
 		}
 		else if (add_cmd == "house") {
-			house_insurance* new_insurance = new house_insurance();
-			new_data[length] = new_insurance;
-			type_chousen = 1;
+			house_insurance* new_insurance = new house_insurance();//создаем новый элемент
+			new_data[length] = new_insurance;//добавляем его в масив
+			type_chousen = 1;//выставляем флаг
 		}
 		else if (add_cmd == "gnrl") {
-			insurance* new_insurance = new insurance();
-			new_data[length] = new_insurance;
-			type_chousen = 1;
+			insurance* new_insurance = new insurance();//создаем новый элемент
+			new_data[length] = new_insurance;//добавляем его в масив
+			type_chousen = 1;//выставляем флаг
 		}
 		else {
-			icmd = 1;
+			icmd = 1;//выставляем флаг неверной команды
 		}
 	}
-	icmd = 0;
+	icmd = 0;//зануляем флаг неверной команды
 	
 	while (!all_added){
 		system("cls");
-		if (icmd) {
+		if (icmd) {//сообщение о необходимости ввода всех параметров
 			cout << "pleas enter all parametrs" <<endl;
 		}
-		(*(new_data[length])).edit();
-		if ((*(new_data[length])).is_set()) {
-			all_added = 1;
+		(*(new_data[length])).edit();//вызываем метод для изменения свойств
+		if ((*(new_data[length])).is_set()) {//проверяем все ли свойства введены
+			all_added = 1;//выставляем флаг
 			
 		}
 		else {
-			icmd = 1;
+			icmd = 1;//выставляем флаг неверной команды
 		}
 	}
 	*data = new_data;// присваеваем новое значение исходному масиву
 	delete[](old_data);//отчищаем ранее выделеную память
-	system("cls");
 }
 
 void DEL(insurance*** data, int length, int line) {
@@ -140,8 +138,8 @@ int main() {
 	bool icmd = 0;
 	bool nl = 0;// флаг неверной команды
 	bool is_added = 0;//флаг успешного добавления
-	bool ans = 0;
-	string answer = "";
+	bool ans = 0;//флаг наличия ответа
+	string answer = "";//переменная для ответов
 	time_t start = 1600128000;
 	time_t end = 1789430400;
 	med_insurance* ins1 = new med_insurance(start, end,
@@ -173,7 +171,7 @@ int main() {
 	house_insurance* ins5 = new house_insurance(start, end,
 												string("IOMKD8942HLR"),
 												string("Ivan"), string("Fedorov"),
-												50000, 10000000, string("ZOHELEG97871"));
+												50000, 10000000, string("ZOHELEG97871"));//создаем объекты классов
 											
 	insurance** data = new insurance*[5]{ins1, ins2, ins3, ins4, ins5};// создаем масив указателей на базовый класс
 
@@ -191,13 +189,13 @@ int main() {
 			cout << "incorrect command" << endl;
 		}
 		if (nl) {
-			cout << "there is no such number of record" << endl;
+			cout << "there is no such number of record" << endl;//сообщения об ошибках
 		}
 		if (is_added) {
-			cout << "successfuly added" << endl;//сообщение об успешном сохранении
+			cout << "successfuly added" << endl;//сообщение об успешном добавлении
 		}
 		if (ans) {
-			cout << "answer is: " << answer << endl;//сообщение об успешном сохранении
+			cout << "answer is: " << answer << endl;//сообщение с ответом
 		}
 		cout << "command: ";
 		cin >> cmd;//просим ввести команду
@@ -208,19 +206,19 @@ int main() {
 		ans = 0;//зануляем флаги после прошлой итерации
 
 		if (cmd == "ADD") {
-			ADD(&data, length);
-			length++;
-			is_added = 1;
+			ADD(&data, length);//вызываем функцию обработчик задачи
+			length++;//увеличиваем length
+			is_added = 1;//выставляем флаг
 		}
 
 		else if (cmd == "MAX") {
-			answer = MAX(data, length);
-			ans = 1;
+			answer = MAX(data, length);//вызываем функцию обработчик задачи
+			ans = 1;//выставляем флаг
 		}
 
 		else if (cmd == "ENDS_LAST") {
-			answer = ENDS_LAST(data, length);
-			ans = 1;
+			answer = ENDS_LAST(data, length);//вызываем функцию обработчик задачи
+			ans = 1;//выставляем флаг
 		}
 
 		else if (cmd == "EDIT") {
